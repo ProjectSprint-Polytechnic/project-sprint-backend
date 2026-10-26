@@ -2,9 +2,7 @@
 
 Бэкенд ProjectSprint Mobile. Мобильный трекер командных проектов для студентов.
 
-REST API для фронтенда `politech-front`. Покрывает все разделы фронта: вход и регистрацию, канбан задач, дедлайны, компетенции и рекомендации, проекты, отчёты с файлами, чаты, статистику, профиль, настройки и «Помощь».
-
-Ключи в JSON совпадают с полями из `src/data/mock.js` фронтенда (`assignee`, `progress`, `daysLeft`, `unread`…), поэтому моки можно заменить ответами API почти без переделок.
+REST API для [веб-интерфейса ProjectSprint Mobile](https://github.com/ProjectSprint-Polytechnic/ProjectNew): вход и регистрация, канбан задач, дедлайны, компетенции и рекомендации, проекты, отчёты с файлами, чаты, статистика, профиль, настройки и «Помощь».
 
 ## Быстрый старт через Docker
 
@@ -12,8 +10,8 @@ REST API для фронтенда `politech-front`. Покрывает все �
 docker compose up --build
 ```
 
-- API: http://localhost:5000/api
-- Проверка: http://localhost:5000/api/health → `{"status": "ok"}`
+- API: http://localhost:5001/api
+- Проверка: http://localhost:5001/api/health → `{"status": "ok"}`
 - Миграции применяются автоматически, база сразу заполняется тестовыми данными (`SEED=1` в `docker-compose.yml`).
 
 ## Запуск без Docker
@@ -120,36 +118,20 @@ Access-токен живёт 12 часов, refresh — 30 дней (`POST /api/
 2. Передайте id при создании: `POST /api/reports {"taskId": 7, "notes": "...", "files": [12]}`. Так же работает для задач, тем компетенций, сообщений, рекомендаций и «Помощи».
 3. Аватар: `PATCH /api/me {"avatarId": 12}`.
 
-## Подключение фронтенда (когда понадобится)
+## Подключение фронтенда
 
-Небольшая обёртка, например `src/api.js`:
+Инструкции для совместного запуска находятся в [репозитории фронтенда](https://github.com/ProjectSprint-Polytechnic/ProjectNew#readme). Разместите оба репозитория рядом: `project-sprint-backend` и `ProjectNew`.
 
-```js
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+Фронтенд обращается к `/api` (переменная `VITE_API_BASE_URL`). При разработке Vite перенаправляет эти запросы на `http://localhost:5001` (переменная `API_PROXY_TARGET`), а при совместном запуске через Docker это делает nginx. Для запуска Flask напрямую на порту 5000 задайте `API_PROXY_TARGET=http://localhost:5000`. При обращении браузера к другому origin добавьте адрес фронтенда в `CORS_ORIGINS`.
 
-export async function api(path, { method = 'GET', body, token } = {}) {
-  const res = await fetch(API + path, {
-    method,
-    headers: { 'Content-Type': 'application/json', ...(token && { Authorization: `Bearer ${token}` }) },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  if (res.status === 204) return null;
-  const data = await res.json();
-  if (!res.ok) throw Object.assign(new Error(data.error), { fields: data.fields, status: res.status });
-  return data;
-}
-```
+При работе с ответами API учитывайте:
 
-Что поменять во фронте:
-- **`store.jsx`:**
-  - начальные значения грузить через `useEffect` (`api('/tasks')`, `api('/columns')`, `api('/projects')`…);
-  - `setTasks(...)` и другие сеттеры заменить на `POST/PATCH/DELETE` с обновлением состояния по ответу.
-- **Колонки:** `task.column` — это числовой id колонки. Ещё есть `task.columnKey` (`progress`/`plans`/`done`) для базовых разделов. При создании задачи `column` можно передать как id или как ключ.
-- **Даты** приходят в формате ISO (`2026-10-21`). В проектах фронт сейчас показывает строку как есть, поэтому её нужно отформатировать через `toLocaleDateString('ru-RU')`.
-- **Документы:** `docs` и `files` — это массивы объектов `{id, name, url}`, а не строки. В разметке используйте `doc.name`.
-- **Сообщения:** вместо `from: 'me'` приходит `mine: true`, а в `from` всегда лежит id автора.
-- **Роль:** берите `user.accountRole` вместо демо-переключателя.
-- **Новые сообщения:** чат обновляется опросом `GET /chats/:id/messages?after=<последний id>`, например раз в 3–5 секунд.
+- `task.column` содержит числовой id колонки, `task.columnKey` содержит ключ базового раздела (`progress`, `plans`, `done`). При создании задачи `column` принимает id или ключ.
+- Даты приходят в формате ISO (`2026-10-21`).
+- `docs` и `files` содержат объекты `{id, name, url}`. Для скачивания файлов нужен заголовок `Authorization`.
+- У сообщений `mine` показывает, что сообщение отправил текущий пользователь, а `from` содержит id автора.
+- Роль пользователя приходит в `user.accountRole` (`student` или `leader`).
+- Новые сообщения доступны через `GET /api/chats/:id/messages?after=<последний id>`.
 
 ## Структура
 
