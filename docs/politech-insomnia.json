@@ -1,0 +1,2443 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-10-19T12:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v10.0.0",
+  "resources": [
+    {
+      "_id": "wrk_politech",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "ProjectSprint Mobile API",
+      "scope": "collection",
+      "description": "Все эндпоинты бэкенда «Политех» (Flask + PostgreSQL)."
+    },
+    {
+      "_id": "env_politech_base",
+      "_type": "environment",
+      "parentId": "wrk_politech",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:5000/api",
+        "token": "{% response 'body', 'req_login_leader', 'b64::JC5hY2Nlc3NUb2tlbg==::46b', 'no-history', 60 %}",
+        "token_student": "{% response 'body', 'req_login_student', 'b64::JC5hY2Nlc3NUb2tlbg==::46b', 'no-history', 60 %}",
+        "refresh_token": "{% response 'body', 'req_login_leader', 'b64::JC5yZWZyZXNoVG9rZW4=::46b', 'no-history', 60 %}"
+      }
+    },
+    {
+      "_id": "fld_00",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "01 Авторизация",
+      "description": "Сначала выполните «Вход (руководитель)» и «Вход (студент)» — токены подставятся сами.",
+      "metaSortKey": 0,
+      "environment": {}
+    },
+    {
+      "_id": "req_login_leader",
+      "_type": "request",
+      "parentId": "fld_00",
+      "name": "Вход (руководитель) ivan",
+      "description": "Токен из ответа автоматически используется во всех запросах (переменная окружения token).",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 1,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"login\": \"ivan\",\n  \"password\": \"politech123\",\n  \"remember\": true\n}"
+      },
+      "authentication": {}
+    },
+    {
+      "_id": "req_login_student",
+      "_type": "request",
+      "parentId": "fld_00",
+      "name": "Вход (студент) alisa",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 2,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"login\": \"alisa\",\n  \"password\": \"politech123\"\n}"
+      },
+      "authentication": {}
+    },
+    {
+      "_id": "req_login_email",
+      "_type": "request",
+      "parentId": "fld_00",
+      "name": "Вход по email",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 3,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"login\": \"vania@mail.com\",\n  \"password\": \"politech123\"\n}"
+      },
+      "authentication": {}
+    },
+    {
+      "_id": "req_login_bad",
+      "_type": "request",
+      "parentId": "fld_00",
+      "name": "Вход — неверный пароль (ожидается 401)",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 4,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"login\": \"ivan\",\n  \"password\": \"wrong\"\n}"
+      },
+      "authentication": {}
+    },
+    {
+      "_id": "req_register",
+      "_type": "request",
+      "parentId": "fld_00",
+      "name": "Регистрация",
+      "description": "Повторный запуск вернёт 422 «Такой логин уже занят» — поменяйте login.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 5,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"login\": \"newstudent\",\n  \"password\": \"secret123\",\n  \"password2\": \"secret123\",\n  \"name\": \"Новый Студент\",\n  \"email\": \"newstudent@politech.test\"\n}"
+      },
+      "authentication": {}
+    },
+    {
+      "_id": "req_register_bad",
+      "_type": "request",
+      "parentId": "fld_00",
+      "name": "Регистрация — ошибки валидации (ожидается 422)",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 6,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"login\": \"ab\",\n  \"password\": \"123\",\n  \"password2\": \"456\"\n}"
+      },
+      "authentication": {}
+    },
+    {
+      "_id": "req_refresh",
+      "_type": "request",
+      "parentId": "fld_00",
+      "name": "Обновить access-токен",
+      "description": "Авторизация — refresh-токен из «Вход (руководитель)».",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/refresh",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 7,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.refresh_token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_restore",
+      "_type": "request",
+      "parentId": "fld_00",
+      "name": "Восстановить пароль",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/restore",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 8,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"login\": \"ivan\"\n}"
+      },
+      "authentication": {}
+    },
+    {
+      "_id": "fld_01",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "02 Профиль и настройки",
+      "description": "",
+      "metaSortKey": 1000,
+      "environment": {}
+    },
+    {
+      "_id": "req_me",
+      "_type": "request",
+      "parentId": "fld_01",
+      "name": "Мой профиль",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/me",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 9,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_me_patch",
+      "_type": "request",
+      "parentId": "fld_01",
+      "name": "Изменить профиль",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/me",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 10,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"telegram\": \"@ivan_super\",\n  \"phone\": \"+7 975 057 55 66\",\n  \"course\": 1,\n  \"birth\": \"2007-01-01\",\n  \"faculty\": \"Транспортный факультет\",\n  \"banner\": 1\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_settings",
+      "_type": "request",
+      "parentId": "fld_01",
+      "name": "Настройки: тема, язык, уведомления",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/me/settings",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 11,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"theme\": \"dark\",\n  \"lang\": \"ru\",\n  \"notify\": {\n    \"messages\": true,\n    \"email\": false,\n    \"deadlines\": true\n  }\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_password",
+      "_type": "request",
+      "parentId": "fld_01",
+      "name": "Сменить пароль",
+      "description": "Пароль оставлен тем же, чтобы не сломать вход.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/me/password",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 12,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"oldPassword\": \"politech123\",\n  \"newPassword\": \"politech123\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_02",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "03 Пользователи и справочники",
+      "description": "",
+      "metaSortKey": 2000,
+      "environment": {}
+    },
+    {
+      "_id": "req_users",
+      "_type": "request",
+      "parentId": "fld_02",
+      "name": "Список людей",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/users",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 13,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_users_search",
+      "_type": "request",
+      "parentId": "fld_02",
+      "name": "Поиск людей ?q=",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/users?q=аналитика",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 14,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_user",
+      "_type": "request",
+      "parentId": "fld_02",
+      "name": "Профиль пользователя",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/users/2",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 15,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_user_role",
+      "_type": "request",
+      "parentId": "fld_02",
+      "name": "Изменить роль (руководитель)",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/users/2/role",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 16,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"role\": \"student\",\n  \"teamRole\": \"Бэкенд-лид\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_meta",
+      "_type": "request",
+      "parentId": "fld_02",
+      "name": "Справочники (хештеги, цвета, технологии)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/meta",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 17,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_health",
+      "_type": "request",
+      "parentId": "fld_02",
+      "name": "Проверка сервера",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/health",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 18,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {}
+    },
+    {
+      "_id": "fld_03",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "04 Разделы доски (колонки)",
+      "description": "",
+      "metaSortKey": 3000,
+      "environment": {}
+    },
+    {
+      "_id": "req_columns",
+      "_type": "request",
+      "parentId": "fld_03",
+      "name": "Список разделов",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/columns",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 19,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_column_create",
+      "_type": "request",
+      "parentId": "fld_03",
+      "name": "Создать раздел (с задачей)",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/columns",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 20,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"На ревью\",\n  \"color\": \"#039be5\",\n  \"task\": {\n    \"title\": \"Проверить вёрстку\",\n    \"tags\": [\n      \"Дизайн\"\n    ]\n  }\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_column_patch",
+      "_type": "request",
+      "parentId": "fld_03",
+      "name": "Изменить раздел",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/columns/{% response 'body', 'req_column_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 21,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Ревью\",\n  \"color\": \"#ef652a\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_column_delete",
+      "_type": "request",
+      "parentId": "fld_03",
+      "name": "Удалить раздел (задачи → «В планах»)",
+      "description": "",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/columns/{% response 'body', 'req_column_create', 'b64::JC5pZA==::46b', 'never', 60 %}?moveTo=2",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 22,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_04",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "05 Задачи",
+      "description": "",
+      "metaSortKey": 4000,
+      "environment": {}
+    },
+    {
+      "_id": "req_tasks",
+      "_type": "request",
+      "parentId": "fld_04",
+      "name": "Все задачи",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/tasks",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 23,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_tasks_filter",
+      "_type": "request",
+      "parentId": "fld_04",
+      "name": "Мои задачи в процессе",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/tasks?assignee=me&column=progress",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 24,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_tasks_search",
+      "_type": "request",
+      "parentId": "fld_04",
+      "name": "Поиск задач ?q=",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/tasks?q=отчёт",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 25,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_tasks_done",
+      "_type": "request",
+      "parentId": "fld_04",
+      "name": "Только выполненные",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/tasks?done=1",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 26,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_task_create",
+      "_type": "request",
+      "parentId": "fld_04",
+      "name": "Создать задачу",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/tasks",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 27,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"column\": \"plans\",\n  \"title\": \"Написать документацию API\",\n  \"description\": \"Описать все эндпоинты\",\n  \"assignee\": 5,\n  \"start\": \"2026-10-19\",\n  \"end\": \"2026-11-01\",\n  \"tags\": [\n    \"Программирование\",\n    \"Отчёты\"\n  ],\n  \"projectId\": 1\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_task_get",
+      "_type": "request",
+      "parentId": "fld_04",
+      "name": "Задача по id",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/tasks/{% response 'body', 'req_task_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 28,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_task_progress",
+      "_type": "request",
+      "parentId": "fld_04",
+      "name": "Изменить прогресс",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/tasks/{% response 'body', 'req_task_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 29,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"progress\": 60\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_task_move",
+      "_type": "request",
+      "parentId": "fld_04",
+      "name": "Перетащить в «Готовые» (→ 100%)",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/tasks/{% response 'body', 'req_task_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 30,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"column\": \"done\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_task_delete",
+      "_type": "request",
+      "parentId": "fld_04",
+      "name": "Удалить задачу",
+      "description": "",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/tasks/{% response 'body', 'req_task_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 31,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_05",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "06 Комментарии к задачам",
+      "description": "",
+      "metaSortKey": 5000,
+      "environment": {}
+    },
+    {
+      "_id": "req_comments",
+      "_type": "request",
+      "parentId": "fld_05",
+      "name": "Комментарии задачи 1",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/tasks/1/comments",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 32,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_comment_create",
+      "_type": "request",
+      "parentId": "fld_05",
+      "name": "Добавить комментарий",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/tasks/1/comments",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 33,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"text\": \"Проверил, всё ок\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_comment_delete",
+      "_type": "request",
+      "parentId": "fld_05",
+      "name": "Удалить комментарий",
+      "description": "",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/comments/{% response 'body', 'req_comment_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 34,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_06",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "07 Дедлайны и учёт часов",
+      "description": "",
+      "metaSortKey": 6000,
+      "environment": {}
+    },
+    {
+      "_id": "req_deadlines",
+      "_type": "request",
+      "parentId": "fld_06",
+      "name": "Дедлайны (просрочено / 7 дней / позже)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/deadlines",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 35,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_deadlines_mine",
+      "_type": "request",
+      "parentId": "fld_06",
+      "name": "Мои дедлайны",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/deadlines?mine=1",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 36,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_worklogs",
+      "_type": "request",
+      "parentId": "fld_06",
+      "name": "Мои часы",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/worklogs",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 37,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_worklogs_user",
+      "_type": "request",
+      "parentId": "fld_06",
+      "name": "Часы пользователя за период",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/worklogs?user=2&from=2026-10-01&to=2026-10-31",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 38,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_worklog_create",
+      "_type": "request",
+      "parentId": "fld_06",
+      "name": "Записать часы",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/worklogs",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 39,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"hours\": 3.5,\n  \"taskId\": 1,\n  \"comment\": \"Вёрстка шапки\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_worklog_delete",
+      "_type": "request",
+      "parentId": "fld_06",
+      "name": "Удалить запись часов",
+      "description": "",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/worklogs/{% response 'body', 'req_worklog_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 40,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_07",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "08 Компетенции",
+      "description": "",
+      "metaSortKey": 7000,
+      "environment": {}
+    },
+    {
+      "_id": "req_comp",
+      "_type": "request",
+      "parentId": "fld_07",
+      "name": "Мои компетенции",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/competencies",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 41,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_comp_user",
+      "_type": "request",
+      "parentId": "fld_07",
+      "name": "Компетенции студента (руководитель)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/competencies?user=5",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 42,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_topic_create",
+      "_type": "request",
+      "parentId": "fld_07",
+      "name": "Добавить компетенцию (тему)",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/competencies/topics",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 43,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"tech\": \"java\",\n  \"title\": \"ООП в Java\",\n  \"notes\": \"Классы, наследование, интерфейсы\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_topic_done",
+      "_type": "request",
+      "parentId": "fld_07",
+      "name": "Отметить тему изученной",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/competencies/topics/{% response 'body', 'req_topic_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 44,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"status\": \"done\",\n  \"notes\": \"Разобрался\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_topic_delete",
+      "_type": "request",
+      "parentId": "fld_07",
+      "name": "Удалить тему",
+      "description": "",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/competencies/topics/{% response 'body', 'req_topic_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 45,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_team",
+      "_type": "request",
+      "parentId": "fld_07",
+      "name": "Навыки команды (руководитель)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/competencies/team",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 46,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_departments",
+      "_type": "request",
+      "parentId": "fld_07",
+      "name": "Отделы (руководитель)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/competencies/departments",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 47,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_08",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "09 Рекомендации",
+      "description": "",
+      "metaSortKey": 8000,
+      "environment": {}
+    },
+    {
+      "_id": "req_recs",
+      "_type": "request",
+      "parentId": "fld_08",
+      "name": "Мои рекомендации",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/recommendations",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 48,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_recs_sent",
+      "_type": "request",
+      "parentId": "fld_08",
+      "name": "Отправленные мной",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/recommendations?sent=1",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 49,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_rec_create",
+      "_type": "request",
+      "parentId": "fld_08",
+      "name": "Дать рекомендацию студенту",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/recommendations",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 50,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"to\": 5,\n  \"text\": \"Прочитай про декораторы\",\n  \"link\": {\n    \"label\": \"Статья\",\n    \"href\": \"https://docs.python.org/3/glossary.html#term-decorator\"\n  }\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_recs_student",
+      "_type": "request",
+      "parentId": "fld_08",
+      "name": "Рекомендации студента (как alisa)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/recommendations",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 51,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_student }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_rec_read",
+      "_type": "request",
+      "parentId": "fld_08",
+      "name": "Отметить прочитанной (как alisa)",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/recommendations/{% response 'body', 'req_rec_create', 'b64::JC5pZA==::46b', 'never', 60 %}/read",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 52,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_student }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_recs_read_all",
+      "_type": "request",
+      "parentId": "fld_08",
+      "name": "Прочитать все",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/recommendations/read-all",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 53,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_09",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "10 Проекты",
+      "description": "",
+      "metaSortKey": 9000,
+      "environment": {}
+    },
+    {
+      "_id": "req_projects",
+      "_type": "request",
+      "parentId": "fld_09",
+      "name": "Список проектов",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/projects",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 54,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_projects_progress",
+      "_type": "request",
+      "parentId": "fld_09",
+      "name": "Проекты в работе",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/projects?status=progress",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 55,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_projects_mine",
+      "_type": "request",
+      "parentId": "fld_09",
+      "name": "Мои проекты (с деталями)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/projects?mine=1&full=1",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 56,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_project_create",
+      "_type": "request",
+      "parentId": "fld_09",
+      "name": "Создать проект",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/projects",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 57,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Цифровая библиотека\",\n  \"goal\": \"Каталог учебных материалов\",\n  \"relevance\": \"Материалы разбросаны по чатам\",\n  \"problem\": \"Трудно найти нужную лекцию\",\n  \"tasks\": [\n    \"Собрать требования\",\n    \"Сделать MVP\"\n  ],\n  \"result\": \"Рабочий сайт\",\n  \"members\": [\n    2,\n    3,\n    5\n  ],\n  \"leader\": 4,\n  \"start\": \"2026-10-20\",\n  \"end\": \"2027-05-31\",\n  \"stages\": [\n    {\n      \"name\": \"Дизайн\",\n      \"percent\": 0\n    },\n    {\n      \"name\": \"Разработка\",\n      \"percent\": 0\n    }\n  ]\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_project_get",
+      "_type": "request",
+      "parentId": "fld_09",
+      "name": "Проект «Подробнее»",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/projects/{% response 'body', 'req_project_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 58,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_project_patch",
+      "_type": "request",
+      "parentId": "fld_09",
+      "name": "Редактировать проект",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/projects/{% response 'body', 'req_project_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 59,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"progress\": 25,\n  \"stages\": [\n    {\n      \"name\": \"Дизайн\",\n      \"percent\": 100\n    },\n    {\n      \"name\": \"Разработка\",\n      \"percent\": 10\n    }\n  ]\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_project_delete",
+      "_type": "request",
+      "parentId": "fld_09",
+      "name": "Удалить проект",
+      "description": "",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/projects/{% response 'body', 'req_project_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 60,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_10",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "11 Файлы",
+      "description": "",
+      "metaSortKey": 10000,
+      "environment": {}
+    },
+    {
+      "_id": "req_file_upload",
+      "_type": "request",
+      "parentId": "fld_10",
+      "name": "Загрузить файл",
+      "description": "Выберите любой файл в поле file (вкладка Body). В ответе — id, его можно передать в files: [id].",
+      "method": "POST",
+      "url": "{{ _.base_url }}/files",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "multipart/form-data"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 61,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "file",
+            "type": "file",
+            "fileName": ""
+          }
+        ]
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_file_download",
+      "_type": "request",
+      "parentId": "fld_10",
+      "name": "Скачать файл",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/files/{% response 'body', 'req_file_upload', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 62,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_file_inline",
+      "_type": "request",
+      "parentId": "fld_10",
+      "name": "Открыть файл в браузере (inline)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/files/{% response 'body', 'req_file_upload', 'b64::JC5pZA==::46b', 'never', 60 %}?inline=1",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 63,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_avatar",
+      "_type": "request",
+      "parentId": "fld_10",
+      "name": "Поставить файл аватаром (нужна картинка)",
+      "description": "Работает, только если загружено изображение.",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/me",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 64,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"avatarId\": \"{% response 'body', 'req_file_upload', 'b64::JC5pZA==::46b', 'never', 60 %}\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_avatar_off",
+      "_type": "request",
+      "parentId": "fld_10",
+      "name": "Убрать аватар",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/me",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 65,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"avatarId\": null\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_file_delete",
+      "_type": "request",
+      "parentId": "fld_10",
+      "name": "Удалить файл",
+      "description": "",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/files/{% response 'body', 'req_file_upload', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 66,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_11",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "12 Отчёты",
+      "description": "",
+      "metaSortKey": 11000,
+      "environment": {}
+    },
+    {
+      "_id": "req_reports",
+      "_type": "request",
+      "parentId": "fld_11",
+      "name": "Мои отчёты",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/reports",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 67,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_reports_all",
+      "_type": "request",
+      "parentId": "fld_11",
+      "name": "Все отчёты (руководитель)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/reports?all=1",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 68,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_report_create",
+      "_type": "request",
+      "parentId": "fld_11",
+      "name": "Добавить отчёт",
+      "description": "Чтобы приложить файл: сначала «Загрузить файл», затем укажите его id в files.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/reports",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 69,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"taskId\": 7,\n  \"notes\": \"Паспорт согласован\",\n  \"files\": []\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_report_get",
+      "_type": "request",
+      "parentId": "fld_11",
+      "name": "Отчёт по id",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/reports/{% response 'body', 'req_report_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 70,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_report_patch",
+      "_type": "request",
+      "parentId": "fld_11",
+      "name": "Изменить заметки",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/reports/{% response 'body', 'req_report_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 71,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"notes\": \"Обновлённые заметки\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_report_delete",
+      "_type": "request",
+      "parentId": "fld_11",
+      "name": "Удалить отчёт",
+      "description": "",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/reports/{% response 'body', 'req_report_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 72,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_12",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "13 Чаты",
+      "description": "",
+      "metaSortKey": 12000,
+      "environment": {}
+    },
+    {
+      "_id": "req_chats",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Мои чаты",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/chats",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 73,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_chats_search",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Поиск по чатам ?q=",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/chats?q=роман",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 74,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_unread",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Всего непрочитанных",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/chats/unread",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 75,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_chat_personal",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Личный чат (с Дмитрием)",
+      "description": "Если чат уже есть — вернётся существующий (200).",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chats",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 76,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"person\": 9\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_chat_group",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Групповой чат",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chats",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 77,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Фронтенд\",\n  \"isGroup\": true,\n  \"members\": [\n    2,\n    5\n  ]\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_chat_project",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Чат проекта",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chats",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 78,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"projectId\": 1\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_chat_get",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Чат по id",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/chats/{% response 'body', 'req_chat_group', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 79,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_chat_patch",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Переименовать / добавить участников",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/chats/{% response 'body', 'req_chat_group', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 80,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Фронтенд-команда\",\n  \"addMembers\": [\n    3\n  ]\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_msg_send",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Отправить сообщение",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chats/{% response 'body', 'req_chat_personal', 'b64::JC5pZA==::46b', 'never', 60 %}/messages",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 81,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"text\": \"Привет! Сервер перезапустил?\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_msgs",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Переписка",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/chats/{% response 'body', 'req_chat_personal', 'b64::JC5pZA==::46b', 'never', 60 %}/messages",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 82,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_msgs_after",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Только новые (опрос) ?after=",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/chats/{% response 'body', 'req_chat_personal', 'b64::JC5pZA==::46b', 'never', 60 %}/messages?after={% response 'body', 'req_msg_send', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 83,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_msgs_seed",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Переписка ProjectsPrint (из тестовых данных)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/chats/1/messages",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 84,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_msgs_find",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Поиск в чате ?q=",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/chats/1/messages?q=конспект",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 85,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_chat_read",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Отметить прочитанным",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chats/1/read",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 86,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_chat_leave",
+      "_type": "request",
+      "parentId": "fld_12",
+      "name": "Выйти из группового чата",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chats/{% response 'body', 'req_chat_group', 'b64::JC5pZA==::46b', 'never', 60 %}/leave",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 87,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_13",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "14 Статистика",
+      "description": "",
+      "metaSortKey": 13000,
+      "environment": {}
+    },
+    {
+      "_id": "req_stats",
+      "_type": "request",
+      "parentId": "fld_13",
+      "name": "Статистика за всё время",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/stats",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 88,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_stats_month",
+      "_type": "request",
+      "parentId": "fld_13",
+      "name": "За месяц",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/stats?period=month",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 89,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_stats_week",
+      "_type": "request",
+      "parentId": "fld_13",
+      "name": "За неделю + поиск участника",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/stats?period=week&q=иван",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 90,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_14",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "15 Помощь",
+      "description": "",
+      "metaSortKey": 14000,
+      "environment": {}
+    },
+    {
+      "_id": "req_help_create",
+      "_type": "request",
+      "parentId": "fld_14",
+      "name": "Отправить обращение",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/help",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 91,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"text\": \"Не загружается аватар\",\n  \"files\": []\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_student }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_help_list",
+      "_type": "request",
+      "parentId": "fld_14",
+      "name": "Обращения (руководитель видит все)",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/help",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 92,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_help_status",
+      "_type": "request",
+      "parentId": "fld_14",
+      "name": "Сменить статус обращения",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/help/{% response 'body', 'req_help_create', 'b64::JC5pZA==::46b', 'never', 60 %}",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 93,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"status\": \"in_work\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_15",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "16 Проверка прав (ожидается 401/403)",
+      "description": "",
+      "metaSortKey": 15000,
+      "environment": {}
+    },
+    {
+      "_id": "req_no_token",
+      "_type": "request",
+      "parentId": "fld_15",
+      "name": "Без токена → 401",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/tasks",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 94,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {}
+    },
+    {
+      "_id": "req_s_column",
+      "_type": "request",
+      "parentId": "fld_15",
+      "name": "Студент создаёт раздел → 403",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/columns",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 95,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"X\",\n  \"color\": \"#ff0000\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_student }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_s_project",
+      "_type": "request",
+      "parentId": "fld_15",
+      "name": "Студент создаёт проект → 403",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/projects",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 96,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"X\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_student }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_s_team",
+      "_type": "request",
+      "parentId": "fld_15",
+      "name": "Студент смотрит навыки команды → 403",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/competencies/team",
+      "headers": [],
+      "parameters": [],
+      "metaSortKey": 97,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {},
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_student }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "req_s_task",
+      "_type": "request",
+      "parentId": "fld_15",
+      "name": "Студент меняет чужую задачу → 403",
+      "description": "",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/tasks/2",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 98,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"progress\": 99\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token_student }}",
+        "prefix": "Bearer"
+      }
+    },
+    {
+      "_id": "fld_16",
+      "_type": "request_group",
+      "parentId": "wrk_politech",
+      "name": "17 Выход (запускать последним)",
+      "description": "После выхода токен отозван — снова выполните «Вход (руководитель)».",
+      "metaSortKey": 16000,
+      "environment": {}
+    },
+    {
+      "_id": "req_logout",
+      "_type": "request",
+      "parentId": "fld_16",
+      "name": "Выйти (отозвать токены)",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/auth/logout",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parameters": [],
+      "metaSortKey": 99,
+      "settingEncodeUrl": true,
+      "settingFollowRedirects": "global",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"refreshToken\": \"{% response 'body', 'req_login_leader', 'b64::JC5yZWZyZXNoVG9rZW4=::46b', 'no-history', 60 %}\"\n}"
+      },
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}",
+        "prefix": "Bearer"
+      }
+    }
+  ]
+}
